@@ -35,10 +35,12 @@ const replaceTemplate = (temp, product) => {
 };
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  const { query, pathname } = url.parse(req.url, true);
+  //   const pathname = req.url;
+  console.log(pathname);
 
   //Overview
-  if (pathName === "/overview" || pathName === "/") {
+  if (pathname === "/overview" || pathname === "/") {
     res.writeHead(200, { "Content-type": "text/html" });
 
     const cardsHtml = dataObj
@@ -48,11 +50,14 @@ const server = http.createServer((req, res) => {
     res.end(output);
 
     //Product
-  } else if (pathName === "/product") {
-    res.end("This is the products");
+  } else if (pathname === "/product") {
+    res.writeHead(200, { "Content-type": "text/html" });
+    const product = dataObj[query.id];
+    const output = replaceTemplate(tempProduct, product);
+    res.end(output);
 
     //Api
-  } else if (pathName === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, { "Content-type": "application/json" });
     res.end(data);
 
